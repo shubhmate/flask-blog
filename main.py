@@ -102,9 +102,18 @@ class Comment(db.Model):
     parent_post = relationship("BlogPost", back_populates="comments")
 
 
+with app.app_context():
+    db.create_all()
+
+
+_tables_created = False
+
 @app.before_request
 def create_tables():
-    db.create_all()
+    global _tables_created
+    if not _tables_created:
+        db.create_all()
+        _tables_created = True
 
 
 def admin_only(f):

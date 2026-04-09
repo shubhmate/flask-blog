@@ -102,10 +102,6 @@ class Comment(db.Model):
     parent_post = relationship("BlogPost", back_populates="comments")
 
 
-with app.app_context():
-    db.create_all()
-
-
 _tables_created = False
 
 @app.before_request
@@ -278,14 +274,17 @@ def about():
 # DON'T put your email and password here directly! The code will be visible when you upload to Github.
 # Use environment variables instead (Day 35)
 
-# TEMPORARY ROUTE - Uncomment to set admin, remove after use
-# @app.route("/make-admin")
-# def make_admin():
+# ADMIN SETUP ROUTE - Add ADMIN_TOKEN env var on Render to activate, delete it after use
+# @app.route("/make-admin/<token>")
+# def make_admin(token):
+#     admin_token = os.environ.get("ADMIN_TOKEN")
+#     if not admin_token or token != admin_token:
+#         return abort(403)
 #     user = db.session.execute(db.select(User).where(User.id == 1)).scalar()
 #     if user:
 #         user.role = "admin"
 #         db.session.commit()
-#         return "Done - remove this route now!"
+#         return "Done - delete ADMIN_TOKEN from environment variables now!"
 #     return "User not found"
 
 

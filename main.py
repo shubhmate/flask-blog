@@ -102,7 +102,8 @@ class Comment(db.Model):
     parent_post = relationship("BlogPost", back_populates="comments")
 
 
-with app.app_context():
+@app.before_request
+def create_tables():
     db.create_all()
 
 

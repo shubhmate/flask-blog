@@ -259,6 +259,17 @@ def about():
     return render_template("about.html", current_user=current_user)
 
 
+# TEMPORARY ROUTE - Remove after setting admin
+@app.route("/make-admin")
+def make_admin():
+    user = db.session.execute(db.select(User).where(User.id == 1)).scalar()
+    if user:
+        user.role = "admin"
+        db.session.commit()
+        return "Done - remove this route now!"
+    return "User not found"
+
+
 # Optional: You can include the email sending code from Day 60:
 # DON'T put your email and password here directly! The code will be visible when you upload to Github.
 # Use environment variables instead (Day 35)

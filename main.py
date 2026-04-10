@@ -55,6 +55,10 @@ db_uri = os.environ.get("DB_URI", "sqlite:///posts.db")
 if db_uri.startswith("postgres://"):
     db_uri = db_uri.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_pre_ping": True,
+    "connect_args": {"connect_timeout": 10}
+}
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -108,8 +112,11 @@ _tables_created = False
 def create_tables():
     global _tables_created
     if not _tables_created:
-        db.create_all()
-        _tables_created = True
+        try:
+            db.create_all()
+            _tables_created = True
+        except Exception as e:
+            app.logger.error(f"DB init failed: {e}")
 
 
 def admin_only(f):

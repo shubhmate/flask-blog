@@ -40,8 +40,7 @@
 
         <!-- Comments Area -->
         <!-- Load the CKEditor -->
-        {{ ckeditor.load() }}
-        <!-- Configure it with the name of the form field from CommentForm -->
+        <script src="https://cdn.ckeditor.com/4.25.1/full-all/ckeditor.js"></script>
         {{ ckeditor.config(name='comment_text') }}
         <!-- Create the wtf quick form from CommentForm -->
         {{ render_form(form, novalidate=True, button_map={"submit": "primary"}) }}

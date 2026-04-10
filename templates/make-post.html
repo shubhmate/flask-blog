@@ -29,7 +29,7 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-        {{ ckeditor.load() }}
+        <script src="https://cdn.ckeditor.com/4.25.1/full-all/ckeditor.js"></script>
         {{ ckeditor.config(name='body') }}
         {{ render_form(form, novalidate=True, button_map={"submit": "primary"}) }}
       </div>

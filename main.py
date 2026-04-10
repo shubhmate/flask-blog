@@ -22,6 +22,9 @@ from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
+app.config['CKEDITOR_PKG_TYPE'] = 'full-all'
+app.config['CKEDITOR_SERVE_LOCAL'] = False
+app.config['CKEDITOR_VERSION'] = '4.25.1'
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 

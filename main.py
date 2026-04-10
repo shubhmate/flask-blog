@@ -10,7 +10,7 @@ from flask import Flask, abort, render_template, redirect, url_for, flash, reque
 load_dotenv()
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
-from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user
+from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_sqlalchemy import SQLAlchemy
@@ -85,7 +85,7 @@ class User(UserMixin, db.Model):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     email: Mapped[str] = mapped_column(String(100), unique=True)
-    password: Mapped[str] = mapped_column(String(100))
+    password: Mapped[str] = mapped_column(String(256))
     name: Mapped[str] = mapped_column(String(100))
     role: Mapped[str] = mapped_column(String(20), nullable=False, default="user")
     posts = relationship("BlogPost", back_populates="author")
@@ -106,15 +106,12 @@ class Comment(db.Model):
     parent_post = relationship("BlogPost", back_populates="comments")
 
 
-_tables_created = False
-
 @app.before_request
 def create_tables():
-    global _tables_created
-    if not _tables_created:
+    if not app.extensions.get("tables_created"):
         try:
             db.create_all()
-            _tables_created = True
+            app.extensions["tables_created"] = True
         except Exception as e:
             app.logger.error(f"DB init failed: {e}")
 
@@ -208,9 +205,8 @@ def show_post(post_id):
         if not current_user.is_authenticated:
             flash("You need to login or register to comment.")
             return redirect(url_for("login"))
-
         new_comment = Comment(
-            text=comment_form.comment_text.data,
+            text=bleach.clean(comment_form.comment_text.data),
             comment_author=current_user,
             parent_post=requested_post
         )
@@ -325,4 +321,5 @@ def contact():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
-    app.run(debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true", host="0.0.0.0", port=port)
+    host = "0.0.0.0" if os.environ.get("RENDER") else "127.0.0.1"
+    app.run(debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true", host=host, port=port)

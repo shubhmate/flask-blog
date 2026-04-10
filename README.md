@@ -151,6 +151,7 @@ https://<your-render-url>/make-admin/<your_token>
 |---|---|
 | `FLASK_KEY` | Flask secret key for sessions |
 | `FLASK_DEBUG` | Set to `false` in production |
+| `PRODUCTION` | Set to `true` on any hosting platform to bind to `0.0.0.0` |
 | `DB_URI` | Database connection string (use External URL on Render) |
 | `MAILTRAP_USER` | Mailtrap SMTP username |
 | `MAILTRAP_PASS` | Mailtrap SMTP password |

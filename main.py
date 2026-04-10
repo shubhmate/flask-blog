@@ -321,5 +321,5 @@ def contact():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
-    host = "0.0.0.0" if os.environ.get("RENDER") else "127.0.0.1"
+    host = "0.0.0.0" if os.environ.get("PRODUCTION") else "127.0.0.1"
     app.run(debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true", host=host, port=port)
